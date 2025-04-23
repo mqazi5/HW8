@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Mohammad Qazi / SECTION 001
  *
  *   Note, additional comments provided throughout this source code
  *   is for educational purposes
@@ -105,6 +105,39 @@ public class Graph {
   public int findRoot() {
 
     // ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME/SECTION AT TOP OF FILE
-    return -1;
+    int[] edges = new int[numVertices]; //array that represents the vertecies in the graph 
+
+    //count incoming edges for each vertex in the graph and incriment by 
+    //the number of incoming edges for each vertex represented in the edges arr
+    
+    for (int src = 0; src < numVertices; src++) {
+      for (int j = 0; j < adjListArr[src].size(); j++) {
+        int dest = adjListArr[src].get(j);
+        edges[dest]++;
+      }
+    }
+
+    int root = -1; //stores the root of the graph based on the for loop below
+
+    //for loop iterating through the verticies of the graph and cheking if the vertex has any edges
+    //based on the value in the edges arr if it does not then the root variable is set to that vertex
+    // or else -1 is returned
+    for (int i = 0; i < numVertices; i++) {
+      if (edges[i] == 0) {
+        if (root == -1) {
+          root = i; 
+        } else {
+          return -1; 
+        }
+      }
+    }
+
+    //if the root stayed -1 that means there is no root and -1 is returned
+    if (root == -1) {
+      return -1; //no root found
+    }
+
+    return vertexValues.get(root);
+    
   } 
 }
