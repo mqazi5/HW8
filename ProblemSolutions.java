@@ -82,7 +82,49 @@ class ProblemSolutions {
                                         prerequisites); 
 
         // ADD YOUR CODE HERE - ADD YOUR NAME / SECTION AT TOP OF FILE
-        return false;
+       int[] preReq = new int[numNodes]; //number of pre-reqs each exam has
+
+        //for loop goign through each exam 
+        for (int i = 0; i < numNodes; i++) {
+            //imbedded for loop that goes through each exam that depends on exam i
+            for (int j = 0; j < adj[i].size(); j++) {
+                int dest = adj[i].get(j); //must first complete exam i in order to take dest
+                preReq[dest]++; //dest has one more pre-req exam that needs to be taken
+            }
+        }
+
+        // noPrereqs that holds exams with 0 pre-reqs
+        LinkedList<Integer> noPrereqs = new LinkedList<>();
+        for (int i = 0; i < numNodes; i++) {
+            if (preReq[i] == 0) {
+                noPrereqs.add(i);
+            }
+        }
+
+        //while loop that continues as long as there are exams that require 0 pre-reqs 
+        int completedExam = 0;
+        while (!noPrereqs.isEmpty()) {
+            int cursor = noPrereqs.remove();
+            completedExam++; //incriments by 1 for each exam that is removed from the noPrereqs
+
+            //for loop that iterates trhough all exams that depend ont he cursor exam that was taken
+            //it then decrements the pre-req for the neghboring exam of cursor by 1 because the exam was taken 
+            //and the neighbor exam requires 1 less exam to be taken
+            for (int j = 0; j < adj[cursor].size(); j++) {
+                int neighbor = adj[cursor].get(j);
+                preReq[neighbor]--;
+
+                //if statement that checks if the neighboring exam has 0 pre-reqs after the exam that was taken
+                // if it is 0 then it is added to the queue so that it can be taken as well
+                if (preReq[neighbor] == 0) {
+                    noPrereqs.add(neighbor);
+                }
+            }
+        }
+
+        //return statememnt that returns true if the exams that were completed is 
+        //equal to the number of exams that were needed to be taken        
+        return completedExam == numNodes; 
 
     }
 
@@ -192,7 +234,42 @@ class ProblemSolutions {
 
         // YOUR CODE GOES HERE - you can add helper methods, you do not need
         // to put all code in this method.
-        return -1;
+        boolean[] visited = new boolean[numNodes]; //array of booleans tracking visited nodes
+        int group = 0; //number of gruops of freidns
+
+        // for loop that iterates trhough each person (node)
+        for(int n = 0; n < numNodes; n++) {
+            //if statement checking if the node has been visited or not creats a new group if statement is true
+            if(!visited[n]) {
+                group++; 
+                Queue<Integer> BFS = new LinkedList<>(); //queue used for BFS traversal of graph
+                BFS.add(n);
+
+                // while loop that loops as long as there are nodes to in the queue 
+                //if statement checks if the next node in the queue is not visited  if so then it is marked as visited
+                while(!BFS.isEmpty()) {
+                    int cursor = BFS.poll(); 
+                    if(!visited[cursor]) {
+                        visited[cursor] = true;
+                        
+                        //a list of neighboring nodes of the current node
+                        List<Integer> neighbors = graph.getOrDefault(cursor, new ArrayList<>());
+                        
+                        //for loop that iterates trhough the neighboring nodes and checks if it has been visited or not.
+                        //if it hasnt been visited then it is added to teh BFS queue.
+                        for (int index = 0; index < neighbors.size(); index++) {
+                            int neighbor = neighbors.get(index);
+                            if (!visited[neighbor]) {
+                                BFS.add(neighbor);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return group;
+    
     }
 
 }
